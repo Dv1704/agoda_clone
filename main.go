@@ -59,7 +59,7 @@ func addLog(msg string) {
 // @title Agoda Data Pipeline API
 // @version 1.0
 // @description Local orchestrator with benchmark and UI for Agoda data pipeline.
-// @host localhost:8082
+// @host localhost:8083
 // @BasePath /api/v1
 
 func main() {
@@ -79,9 +79,9 @@ func main() {
 		api.GET("/system", getSystemMetricsEndpoint)
 	}
 
-	fmt.Println("🚀 Server starting on http://localhost:8082")
-	fmt.Println("📚 Swagger UI available at http://localhost:8082/swagger/index.html")
-	if err := r.Run(":8082"); err != nil {
+	fmt.Println("🚀 Server starting on http://localhost:8083")
+	fmt.Println("📚 Swagger UI available at http://localhost:8083/swagger/index.html")
+	if err := r.Run(":8083"); err != nil {
 		fmt.Printf("Startup failed: %v\n", err)
 	}
 }

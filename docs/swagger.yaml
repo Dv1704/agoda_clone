@@ -33,7 +33,7 @@ definitions:
       mem_used:
         type: integer
     type: object
-host: localhost:8082
+host: localhost:8083
 info:
   contact: {}
   description: Local orchestrator with benchmark and UI for Agoda data pipeline.
