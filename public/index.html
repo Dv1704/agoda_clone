@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,6 +94,7 @@
             border: 1px solid var(--border-color);
             box-shadow: none;
         }
+
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
@@ -157,10 +159,26 @@
             font-weight: 600;
             text-transform: uppercase;
         }
-        .status-idle { background: rgba(148, 163, 184, 0.2); color: var(--text-muted); }
-        .status-running { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-        .status-completed { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .status-failed { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        .status-idle {
+            background: rgba(148, 163, 184, 0.2);
+            color: var(--text-muted);
+        }
+
+        .status-running {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
 
         .terminal {
             background: #020617;
@@ -191,25 +209,42 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.2);
         }
+
         ::-webkit-scrollbar-thumb {
             background: #475569;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #64748b;
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Loading Dots */
@@ -219,13 +254,30 @@
         }
 
         @keyframes dots {
-            0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
-            40% { color: white; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
-            60% { text-shadow: .25em 0 0 white, .5em 0 0 rgba(0,0,0,0); }
-            80%, 100% { text-shadow: .25em 0 0 white, .5em 0 0 white; }
+
+            0%,
+            20% {
+                color: rgba(0, 0, 0, 0);
+                text-shadow: .25em 0 0 rgba(0, 0, 0, 0), .5em 0 0 rgba(0, 0, 0, 0);
+            }
+
+            40% {
+                color: white;
+                text-shadow: .25em 0 0 rgba(0, 0, 0, 0), .5em 0 0 rgba(0, 0, 0, 0);
+            }
+
+            60% {
+                text-shadow: .25em 0 0 white, .5em 0 0 rgba(0, 0, 0, 0);
+            }
+
+            80%,
+            100% {
+                text-shadow: .25em 0 0 white, .5em 0 0 white;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -238,14 +290,22 @@
 
         <div class="dashboard-grid glass-panel" style="margin-bottom: 20px;">
             <div class="metric-card">
+                <div class="metric-title">CPU Usage</div>
+                <div class="metric-value">
+                    <span id="cpuVal">0.0%</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Memory Usage</div>
+                <div class="metric-value">
+                    <span id="memVal">0.0%</span>
+                </div>
+            </div>
+            <div class="metric-card">
                 <div class="metric-title">Pipeline Status</div>
                 <div class="metric-value">
                     <span id="statusBadge" class="status-badge status-idle">IDLE</span>
                 </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">Started At</div>
-                <div class="metric-value" id="startTimeVal">--:--:--</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Duration</div>
@@ -269,15 +329,15 @@
             const btn = document.getElementById('runBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="loading">Running</span>';
-            
+
             document.getElementById('terminal').innerHTML = '<p>Initializing pipeline execution...</p>';
-            
+
             try {
                 const response = await fetch('/api/v1/run', { method: 'POST' });
                 if (!response.ok) {
                     throw new Error('Pipeline was already running or failed to start.');
                 }
-                
+
                 if (!isPolling) {
                     startPolling();
                 }
@@ -294,6 +354,21 @@
             pollInterval = setInterval(pollStatus, 1000);
         }
 
+        async function pollSystem() {
+            try {
+                const res = await fetch('/api/v1/system');
+                const data = await res.json();
+
+                document.getElementById('cpuVal').innerText = data.cpu_percent.toFixed(1) + '%';
+                document.getElementById('memVal').innerText = data.mem_percent.toFixed(1) + '%';
+            } catch (err) {
+                console.error("Failed to poll system metrics", err);
+            }
+        }
+
+        setInterval(pollSystem, 3000);
+        pollSystem();
+
         function stopPolling() {
             isPolling = false;
             clearInterval(pollInterval);
@@ -306,7 +381,7 @@
             try {
                 const res = await fetch('/api/v1/status');
                 const data = await res.json();
-                
+
                 // Update Badge
                 const badge = document.getElementById('statusBadge');
                 if (data.is_running) {
@@ -324,10 +399,8 @@
 
                 // Update metrics
                 if (data.benchmark) {
-                    const start = new Date(data.benchmark.start_time);
-                    document.getElementById('startTimeVal').innerText = start.toLocaleTimeString();
-
                     if (data.benchmark.status === 'Running') {
+                        const start = new Date(data.benchmark.start_time);
                         const now = new Date();
                         const diff = (now - start) / 1000;
                         document.getElementById('durationVal').innerText = diff.toFixed(1) + 's';
@@ -345,7 +418,7 @@
                         if (log.includes('❌') || log.includes('🔴')) clazz = 'error';
                         return `<p class="${clazz}">${log.replace(/\\n/g, '<br>')}</p>`;
                     }).join('');
-                    
+
                     // Only update and scroll if logs changed length 
                     // (simplistic check, assumes logs only append)
                     const currentLogCount = term.querySelectorAll('p').length;
@@ -363,11 +436,11 @@
                 console.error("Failed to poll status", err);
             }
         }
-        
+
         // Initial Poll to check if already running when page loads
         pollStatus().then(() => {
             const badge = document.getElementById('statusBadge');
-            if(badge.innerText === 'RUNNING') {
+            if (badge.innerText === 'RUNNING') {
                 document.getElementById('runBtn').disabled = true;
                 document.getElementById('runBtn').innerHTML = '<span class="loading">Running</span>';
                 startPolling();
@@ -375,4 +448,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/mem"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -36,6 +38,13 @@ type StatusResponse struct {
 	IsRunning bool             `json:"is_running"`
 	Logs      []string         `json:"logs"`
 	Benchmark *BenchmarkResult `json:"benchmark"`
+}
+
+type SystemMetrics struct {
+	CPUPercent float64 `json:"cpu_percent"`
+	MemTotal   uint64  `json:"mem_total"`
+	MemUsed    uint64  `json:"mem_used"`
+	MemPercent float64 `json:"mem_percent"`
 }
 
 var dryRun = os.Getenv("DRY_RUN") == "true"
@@ -67,6 +76,7 @@ func main() {
 	{
 		api.POST("/run", runPipelineEndpoint)
 		api.GET("/status", getStatusEndpoint)
+		api.GET("/system", getSystemMetricsEndpoint)
 	}
 
 	fmt.Println("🚀 Server starting on http://localhost:8080")
@@ -122,6 +132,29 @@ func getStatusEndpoint(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+// @Summary Get system metrics
+// @Description Get CPU and Memory usage of the host system
+// @Produce json
+// @Success 200 {object} SystemMetrics
+// @Router /system [get]
+func getSystemMetricsEndpoint(c *gin.Context) {
+	v, _ := mem.VirtualMemory()
+	cPercent, _ := cpu.Percent(0, false)
+
+	cpuUsage := 0.0
+	if len(cPercent) > 0 {
+		cpuUsage = cPercent[0]
+	}
+
+	metrics := SystemMetrics{
+		CPUPercent: cpuUsage,
+		MemTotal:   v.Total,
+		MemUsed:    v.Used,
+		MemPercent: v.UsedPercent,
+	}
+	c.JSON(http.StatusOK, metrics)
 }
 
 func executePipeline() {

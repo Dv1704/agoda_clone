@@ -22,6 +22,17 @@ definitions:
           type: string
         type: array
     type: object
+  main.SystemMetrics:
+    properties:
+      cpu_percent:
+        type: number
+      mem_percent:
+        type: number
+      mem_total:
+        type: integer
+      mem_used:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -55,4 +66,15 @@ paths:
           schema:
             $ref: '#/definitions/main.StatusResponse'
       summary: Get pipeline status and benchmarks
+  /system:
+    get:
+      description: Get CPU and Memory usage of the host system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SystemMetrics'
+      summary: Get system metrics
 swagger: "2.0"

@@ -54,6 +54,23 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/system": {
+            "get": {
+                "description": "Get CPU and Memory usage of the host system",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get system metrics",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SystemMetrics"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -88,6 +105,23 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "main.SystemMetrics": {
+            "type": "object",
+            "properties": {
+                "cpu_percent": {
+                    "type": "number"
+                },
+                "mem_percent": {
+                    "type": "number"
+                },
+                "mem_total": {
+                    "type": "integer"
+                },
+                "mem_used": {
+                    "type": "integer"
                 }
             }
         }
