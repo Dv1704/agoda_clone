@@ -1,0 +1,89 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Local orchestrator with benchmark and UI for Agoda data pipeline.",
+        "title": "Agoda Data Pipeline API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/run": {
+            "post": {
+                "description": "Start the Spark pipeline jobs and shadow testing",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Trigger the pipeline",
+                "responses": {
+                    "200": {
+                        "description": "Pipeline Started",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Pipeline already running",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/status": {
+            "get": {
+                "description": "Get real-time logs and benchmark times",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get pipeline status and benchmarks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.StatusResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.BenchmarkResult": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.StatusResponse": {
+            "type": "object",
+            "properties": {
+                "benchmark": {
+                    "$ref": "#/definitions/main.BenchmarkResult"
+                },
+                "is_running": {
+                    "type": "boolean"
+                },
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

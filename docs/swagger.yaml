@@ -1,0 +1,58 @@
+basePath: /api/v1
+definitions:
+  main.BenchmarkResult:
+    properties:
+      duration:
+        type: string
+      end_time:
+        type: string
+      start_time:
+        type: string
+      status:
+        type: string
+    type: object
+  main.StatusResponse:
+    properties:
+      benchmark:
+        $ref: '#/definitions/main.BenchmarkResult'
+      is_running:
+        type: boolean
+      logs:
+        items:
+          type: string
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Local orchestrator with benchmark and UI for Agoda data pipeline.
+  title: Agoda Data Pipeline API
+  version: "1.0"
+paths:
+  /run:
+    post:
+      description: Start the Spark pipeline jobs and shadow testing
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pipeline Started
+          schema:
+            type: string
+        "409":
+          description: Pipeline already running
+          schema:
+            type: string
+      summary: Trigger the pipeline
+  /status:
+    get:
+      description: Get real-time logs and benchmark times
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.StatusResponse'
+      summary: Get pipeline status and benchmarks
+swagger: "2.0"
