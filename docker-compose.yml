@@ -29,8 +29,6 @@ services:
       - POSTGRES_USER=agoda
       - POSTGRES_PASSWORD=agoda
       - POSTGRES_DB=agoda_data
-    ports:
-      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
