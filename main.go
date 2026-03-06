@@ -59,7 +59,7 @@ func addLog(msg string) {
 // @title Agoda Data Pipeline API
 // @version 1.0
 // @description Local orchestrator with benchmark and UI for Agoda data pipeline.
-// @host localhost:8080
+// @host localhost:8082
 // @BasePath /api/v1
 
 func main() {
@@ -79,9 +79,9 @@ func main() {
 		api.GET("/system", getSystemMetricsEndpoint)
 	}
 
-	fmt.Println("🚀 Server starting on http://localhost:8080")
-	fmt.Println("📚 Swagger UI available at http://localhost:8080/swagger/index.html")
-	if err := r.Run(":8080"); err != nil {
+	fmt.Println("🚀 Server starting on http://localhost:8082")
+	fmt.Println("📚 Swagger UI available at http://localhost:8082/swagger/index.html")
+	if err := r.Run(":8082"); err != nil {
 		fmt.Printf("Startup failed: %v\n", err)
 	}
 }
@@ -186,9 +186,9 @@ func executePipeline() {
 	addLog("🔄 Triggering Spark Job (Stable)...")
 	stableInput := "data/raw/records.csv"
 	if !dryRun {
-		stableInput = "/opt/bitnami/spark/data/raw/records.csv"
+		stableInput = "/data/raw/records.csv"
 	}
-	if err := runSparkJob("jobs/transform.py", stableInput, "data/stable/output"); err != nil {
+	if err := runSparkJob("/jobs/transform.py", stableInput, "/data/stable/output"); err != nil {
 		addLog(fmt.Sprintf("❌ Spark Job (Stable) Failed: %v", err))
 		markFailed()
 		return
@@ -199,9 +199,9 @@ func executePipeline() {
 	addLog("🔄 Triggering Spark Job (Test/Shadow)...")
 	testInput := "data/raw/records.csv"
 	if !dryRun {
-		testInput = "/opt/bitnami/spark/data/raw/records.csv"
+		testInput = "/data/raw/records.csv"
 	}
-	if err := runSparkJob("jobs/transform.py", testInput, "data/test/output"); err != nil {
+	if err := runSparkJob("/jobs/transform.py", testInput, "/data/test/output"); err != nil {
 		addLog(fmt.Sprintf("❌ Spark Job (Test) Failed: %v", err))
 		markFailed()
 		return

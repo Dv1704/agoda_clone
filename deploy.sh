@@ -31,4 +31,4 @@ sshpass -e ssh -o StrictHostKeyChecking=no $USER@$IP "cd $DIR && \
   pkill -f './agoda-data-pipeline' || true && \
   nohup ./agoda-data-pipeline > app.log 2>&1 &"
 
-echo "Deploy finished! Connect to http://$IP:8081"
+echo "Deploy finished! Connect to http://$IP:8082"
