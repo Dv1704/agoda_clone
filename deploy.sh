@@ -28,7 +28,9 @@ sshpass -e ssh -o StrictHostKeyChecking=no $USER@$IP "cd $DIR && \
   chmod +x ./agoda-data-pipeline && \
   docker compose down || true && \
   docker compose up -d && \
-  pkill -f './agoda-data-pipeline' || true && \
+  killall -9 agoda-data-pipeline || true ; \
+  fuser -k -9 8083/tcp || true ; \
+  sleep 2 ; \
   nohup ./agoda-data-pipeline > app.log 2>&1 &"
 
 echo "Deploy finished! Connect to http://$IP:8083"

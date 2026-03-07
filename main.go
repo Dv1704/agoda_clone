@@ -258,7 +258,7 @@ func runSparkJob(jobPath, inputPath, outputPath string) error {
 	} else {
 		// Execute spark-submit inside the docker container
 		cmd = exec.Command("docker", "exec", "agoda_data_pipline_clone-spark-master-1",
-			"spark-submit", "--master", "spark://spark-master:7077",
+			"/spark/bin/spark-submit", "--master", "spark://spark-master:7077",
 			jobPath, inputPath, outputPath)
 	}
 

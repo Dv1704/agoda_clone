@@ -54,6 +54,13 @@ make generate
 make run
 ```
 
+### 4. Deploy to Production
+To deploy the pipeline to the Contabo VPS, use the provided deployment script:
+```bash
+./deploy.sh
+```
+**Live Dashboard:** [http://144.91.111.151:8083](http://144.91.111.151:8083)
+
 ---
 
 ## 📂 Project Structure
