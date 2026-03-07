@@ -54,12 +54,18 @@ make generate
 make run
 ```
 
-### 4. Deploy to Production
-To deploy the pipeline to the Contabo VPS, use the provided deployment script:
-```bash
-./deploy.sh
-```
-**Live Dashboard:** [http://144.91.111.151:8083](http://144.91.111.151:8083)
+### 4. Live Production Dashboard
+The Agoda Data Pipeline is fully deployed and running live in production!
+
+**🔗 Access the Dashboard:** [http://144.91.111.151:8083](http://144.91.111.151:8083)
+
+#### What is this website?
+This dashboard serves as the central command center for the pipeline:
+1. **The Orchestrator:** A high-performance Go backend that triggers the distributed Apache Spark jobs, enforces the `schema.json` data contracts, and manages the shadow testing parallel runs.
+2. **Real-Time Monitoring:** The UI connects directly to the server to stream live execution logs, monitor infrastructure CPU/Memory utilization, and benchmark pipeline execution durations in real-time.
+3. **API Access:** It also provides full Swagger API documentation at `/swagger/index.html` for headless programmatic access.
+
+![Agoda Pipeline Dashboard](./dashboard.png)
 
 ---
 
